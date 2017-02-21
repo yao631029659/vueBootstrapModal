@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <title></title>
+</head>
+<body>
+<div class="container" id="box">
+    <!-- 新增表单 -->
+    <fieldset>
+        <div class="form-group">
+            <label for="uName">用户名：</label>
+            <!--.form-control 类的 <input>、<textarea> 和 <select> 元素都将被默认设置宽度属性为 width: 100%;-->
+            <input type="text" id="uName" class="form-control" v-model="newData.userName">
+        </div>
+        <div class="form-group">
+            <label for="age">年  龄：</label>
+            <input type="text" id="age" class="form-control" v-model="newData.userAge">
+        </div>
+        <div class="form-group">
+            <input type="button" value="添加" class="btn btn-primary" @click="add">
+            <!-- 重置按钮是报废的 -->
+            <input type="reset" value="重置" class="btn btn-success">
+        </div>
+    </fieldset>
+    <!-- 分割线 -->
+    <hr>
+    <!-- 展示表格 -->
+    <table class="table table-bordered table-hover">
+        <caption class="h2 text-center">用户信息表</caption>
+        <thead>
+        <tr class="text-info">
+            <th class="text-center">序号</th>
+            <th class="text-center">名字</th>
+            <th class="text-center">年龄</th>
+            <th class="text-center">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="text-center" v-for="(item,index) in myData">
+            <td>{{index + 1}}</td>
+            <td>{{item.userName}}</td>
+            <td>{{item.userAge}}</td>
+            <td><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#layer" @click="nowIndex=$index">删除</button></td>
+        </tr>
+        <tr class="text-right" v-show="myData.length!=0">
+            <td colspan="4">
+                <!-- 把modal的显示放到这个按钮上了 这个按钮触发了两个函数 第一个让modal显示 第二个给nowIndex赋值-->
+                <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#layer" @click="nowIndex=-2">全部删除</button>
+            </td>
+        </tr>
+        <tr class="text-center text-muted" v-show="myData.length==0">
+            <td colspan="4"><p>暂无数据……</p></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!--模态框 弹出框-->
+    <div class="modal fade" role="dialog" id="layer">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                    <h4 class="modal-title">确认删除吗？</h4>
+                </div>
+                <div class="modal-body text-right">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <!-- 如果点击了romove就调用remove方法把值干掉 -->
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" @click="remove(nowIndex)">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js">
+</script>
+<script src="https://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js">
+</script>
+<script type="text/javascript" src='../js/vue.js'></script>
+<script>
+    var vm = new Vue({
+        el:'#box',
+        data:{
+            myData:[],
+            newData:{
+                userName:'',
+                userAge:'',
+            },
+            nowIndex:'-100' //需要特别注意nowIndex的用法
+        },
+        methods:{
+            add:function(){
+                this.myData.push(this.newData)
+            },
+            remove:function(n){
+                if(n==-2){//如果点击的是“全部删除”，则清空整个数组
+                    this.myData=[];
+                }else{//如果点击的是单行内的“删除”，则删除该行即可
+                    this.myData.splice(n,1)
+                }
+            },
+        }
+    })
+</script>
+</body>
+</html>

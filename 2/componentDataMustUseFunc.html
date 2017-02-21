@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+    </head>
+    <body>
+        <div id="app">
+            <my-component></my-component>
+            <test></test>
+        </div>
+
+        <template id="myComponent">
+            <div>This is a component!</div>
+        </template>
+        <template id="test">
+        <div>
+          看到这个说明你运气不错{{a}}
+        </div>
+        </template>
+    </body>
+    <script src="js/vue.js"></script>
+    <script>
+
+        Vue.component('my-component',{
+            template: '#myComponent'
+        })
+        Vue.component('test',{
+            template:'#test',
+            data:function(){
+                return {a:1}
+            }
+        })
+
+        new Vue({
+            el: '#app'
+        })
+
+    </script>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <div id="app">
+            <!-- 读取的是父组件的display值 -->
+            <my-component v-show="display"></my-component>
+        </div>
+
+        <template id="myComponent">
+            <div>
+                <h2>{{ msg }}</h2>
+                <h2>子组件的display值为{{display}}</h2>
+                <button v-on:click="showMsg">Show Message</button>
+            </div>
+        </template>
+    </body>
+    <script src="js/vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data:{
+                // js的true不能写成True
+                display:true
+            },
+            components: {
+                'my-component': {
+                    template: '#myComponent',
+                    data: function() {
+                        return {
+                            msg: 'This is a component!',
+                            display:false
+                        }
+                    },
+                    methods: {
+                        showMsg: function() {
+                            alert(this.msg)
+                        }
+                    },
+                }
+            }
+        })
+    </script>
+</html>

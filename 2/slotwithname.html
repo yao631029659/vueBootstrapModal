@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" href="styles/iconfont.css" />
+
+    </head>
+
+    <body>
+        <div id="app">
+            <!-- 开始调用子组件 把父组件的show传递给子组件的show -->
+            <modal-dialog v-bind:show.sync="show">
+                <!-- 表头 提示信息及其背景 -->
+                <header class="dialog-header" slot="header">
+                    <h1 class="dialog-title">提示信息</h1>
+                </header>
+                <!-- 中间 -->
+                <div class="dialog-body" slot="body">
+                    <p>你想在对话框中放什么内容都可以！</p>
+                    <p>你可以放一段文字，也可以放一些表单，或者是一些图片。</p>
+                </div>
+                <!-- 尾部 -->
+                <footer class="dialog-footer" slot="footer">
+                    <button class="btn" @click="closeDialog">关闭</button>
+                </footer>
+            </modal-dialog>
+
+            <button class="btn btn-open" @click="openDialog">打开对话框</button>
+        </div>
+        <!-- 对话框 -->
+        <template id="dialog-template">
+            <div class="dialogs">
+                <!-- 是否赋予class=dialog-active 由show的值决定 show是父类传递过来的props-->
+                <div class="dialog" v-bind:class="{ 'dialog-active': show }">
+                    <div class="dialog-content">
+                        <div class="close rotate">
+                            <!-- 点击关闭按钮 调用子类的关闭方法 这个按钮的页面最右上角-->
+                            <span class="iconfont icon-close" @click="close"></span>
+                        </div>
+                        <!-- 三个slot在这里 -->
+                        <slot name="header"></slot>
+                        <slot name="body"></slot>
+                        <slot name="footer"></slot>
+                    </div>
+                </div>
+                <div class="dialog-overlay"></div>
+            </div>
+        </template>
+
+        <script src="js/vue.js"></script>
+        <script>
+            Vue.component('modal-dialog', {
+                template: '#dialog-template',
+                // 双向绑定父类的show方法
+                props: ['show'],
+                methods: {
+                    close: function() {
+                        this.show = false
+                    }
+                }
+            })
+            new Vue({
+                el: '#app',
+                // 决定对话框显示不显示
+                data: {
+                    show: false
+                },
+                methods: {
+                // button调用这个方法来控制对话框的显示与否
+                    openDialog: function() {
+                        this.show = true
+                    },
+                    closeDialog: function() {
+                        this.show = false
+                    }
+                }
+            })
+        </script>
+    </body>
+
+</html>

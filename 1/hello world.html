@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <script type="text/javascript" src="../vue.js"></script>
+    </head>
+
+    <body>
+        <!--这是我们的View-->
+        <div id="app">
+            {{ message }}
+            <br>
+            <input type="text" name="" v-model="message">
+        </div>
+    </body>
+    <script src="js/vue.js"></script>
+    <script>
+        // 这是我们的Model 这里用等号赋值
+        var exampleData = {
+            message: 'Hello World!'
+        }
+
+        // 创建一个 Vue 实例或 "ViewModel"
+        // 它连接 View 与 Model view就是html
+        // model是我们定义的变量
+        new Vue({
+            el: '#app',
+            data: exampleData
+        })
+    </script>

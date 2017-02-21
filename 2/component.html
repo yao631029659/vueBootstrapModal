@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<div id="demo">
+    <!-- 3.在控制范围内 使用组件 -->
+    <my-component></my-component>
+</div>
+</body>
+<script type="text/javascript" src="js/vue.js"></script>
+<script>
+// 1.组件是vue的一个实例 创建组件
+var mycomponent=Vue.extend({
+    template:"<h1>我是新来的组件，你好！</h1>"
+})
+// 2.注册组件
+Vue.component('my-component',mycomponent)
+var vm = new Vue({
+
+    el: "#demo"
+
+})
+</script>
+</html>

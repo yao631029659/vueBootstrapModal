@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="styles/demo.css">
+</head>
+<body>
+<div id='app'>
+    <div id="searchBar">
+        <input type="tel" name="" value="" placeholder="" v-model="searchQuery">
+    </div>
+    <simple-grid :data='gridData' :columns='gridColumns' :filter-key="searchQuery"></simple-grid>
+</div>
+<template id="grid-template">
+        <table>
+            <thead>
+                <tr>
+                    <th v-for="col in columns">
+                        <!-- capitalize是首字符大写意思 -->
+                        {{ col | capitalize}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 读取每一行 并且用filterBy过滤 -->
+                <tr v-for="row in data | filterBy filterKey">
+                    <!-- 因为每一行是一个数组 要读取数组里面的列 需要用到array[key]语法 -->
+                    <td v-for="col in columns">
+                        {{row[col]}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</template>
+</body>
+<script type="text/javascript" src="js/vue.js"></script>
+<script>
+
+Vue.component('simple-grid', {
+            template: '#grid-template',
+            props: {
+                data: Array,
+                columns: Array,
+                filterKey: String
+            }
+        })
+var demo = new Vue({
+    el: '#app',
+    data: {
+        searchQuery: '',
+        // 为什么用[] 因为json就长这样
+        gridColumns: ['name', 'age', 'sex'],
+        gridData: [{
+            name: 'Jack',
+            age: 30,
+            sex: 'Male'
+        }, {
+            name: 'Bill',
+            age: 26,
+            sex: 'Male'
+        }, {
+            name: 'Tracy',
+            age: 22,
+            sex: 'Female'
+        }, {
+            name: 'Chris',
+            age: 36,
+            sex: 'Male'
+        }]
+    }
+})
+</script>
+</html>

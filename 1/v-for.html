@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <div id='app'>
+        <!-- view的部分 -->
+        <table>
+            <caption>v-for</caption>
+            <thead>
+                <tr>
+                    <th>name</th>
+                    <th>age</th>
+                    <th>sex</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="persion in people">
+                    <td>{{persion.name}}</td>
+                    <td>{{persion.age}}</td>
+                    <td>{{persion.sex}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</head>
+<body>
+<script type="text/javascript" src="../vue.js"></script>
+<script>
+    // model 部分
+    var exampleData = {
+        people:[{
+            name:'jack',
+            age:30,
+            sex:'male'
+        },{
+            name:'bill',
+            age:22,
+            sex:'female'
+        }]
+    }
+    // 绑定部分
+    var vm = new Vue({
+
+        el: "#app",
+        data:exampleData
+
+    })
+</script>
+
+</body>
+</html>

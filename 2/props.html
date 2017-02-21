@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="styles/demo.css">
+</head>
+<body>
+<!-- 定义view -->
+<div id="app">
+    <my-component v-bind:my-name="name" v-bind:my-age="age"></my-component>
+</div>
+<!-- 定义子组件模板 -->
+<template id="myComponent">
+    <table>
+        <tr>
+            <th colspan="2">
+                子组件数据
+            </th>
+        </tr>
+        <tr>
+            <td>my name</td>
+            <td>{{ myName }}</td>
+        </tr>
+        <tr>
+            <td>my age</td>
+            <td>{{ myAge }}</td>
+        </tr>
+    </table>
+</template>
+</body>
+<script type="text/javascript" src="js/vue.js"></script>
+<script type="text/javascript">
+// 新建实例
+var vm = new Vue({
+    el: '#app',
+    data: {
+        name: 'keepfool',
+        age: 28
+    },
+    components: {
+        'my-component': {
+            template: '#myComponent',
+            props: ['myName', 'myAge']
+        }
+    }
+})
+</script>
+</html>

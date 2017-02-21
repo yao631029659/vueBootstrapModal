@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <style>
+
+            #app{
+                max-width: 640px;
+                margin: 50px auto;
+            }
+
+            #parent-component, #child-component1, #child-component2{
+                display: none;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <!-- 这个是爷组件 -->
+        <div id="app">
+            <parent-component></parent-component>
+        </div>
+        <!-- 父组件的组织方式 -->
+        <template id="parent-component">
+            <child-component1></child-component1>
+            <child-component2></child-component2>
+            <button v-on:click="showChildComponentData">显示子组件的数据</button>
+        </template>
+        <!-- 第一个子组件 -->
+        <template id="child-component1">
+            <h2>This is child component 1</h2>
+        </template>
+        <!-- 第二个子组件 -->
+        <template id="child-component2">
+            <h2>This is child component 2</h2>
+        </template>
+
+        <script src="js/vue.js"></script>
+        <script>
+            //定义要一个父组件
+            Vue.component('parent-component', {
+                template: '#parent-component',
+                components: {
+                    //这个组件下又定义了 两个子组件
+                    'child-component1': {
+                        template: '#child-component1',
+                        // 子组件的data只能用return方式
+                        data: function() {
+                            return {
+                                msg: 'child component 111111'
+                            }
+                        }
+                    },
+                    // 第二个子组件
+                    'child-component2': {
+                        template: '#child-component2',
+                        data: function() {
+                            return {
+                                msg: 'child component 222222'
+                            }
+                        }
+                    }
+                },
+                // 父组件的methods
+                methods: {
+                    showChildComponentData: function() {
+                        // 遍历子组件
+                        for (var i = 0; i < this.$children.length; i++) {
+                            alert(this.$children[i].msg)
+                        }
+                    }
+                }
+            })
+
+            new Vue({
+                el: '#app'
+            })
+        </script>
+
+    </body>
+
+</html>

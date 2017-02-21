@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <link href="http://apps.bdimg.com/libs/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+    <div class="container">
+        <div id="app">
+            <button type="button" data-toggle='modal' href="#mymodal">新增</button>
+            <hr>
+            <input type="text" v-model="searchword">
+            <simple-table :columns="vmcolumns" :rows='vmrows' :filterword="searchword"></simple-table>
+        </div>
+    </div>
+    <template id="simple-table">
+        <table class="table">
+            <caption>table title and/or explanatory text</caption>
+            <thead>
+                <tr>
+                    <th v-for="col in columns">{{col.name}}</th>
+                    <th>修改</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(index,row) in rows | filterBy filterword">
+                    <td v-for="col in columns">
+                        <span v-if='col.iskey'><a href="javascript:void(0)" @click='edit(row)'>{{row[col.name]}}</a></span>
+                        <span v-else>{{row[col.name]}}</span>
+                    </td>
+                    <td><span><button type="button" @click='deleteItem(index)'>删除</button></span></td>
+                </tr>
+            </tbody>
+        </table>
+    </template>
+    <!-- <template id='dialog'> -->
+        <div class="modal fade" id='mymodal' data-backdrop='false'>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" data-dismiss="modal">×</button>
+                    </div>
+                    <div class="medal-body">body</div>
+                    <div class="modal-footer">
+                        <button data-dismiss='modal' class="btn btn-default">
+                            关闭
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- </template> -->
+    </body>
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="http://apps.bdimg.com/libs/jquery/2.0.0/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="http://apps.bdimg.com/libs/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="./js/vue.js"></script>
+    <script type="text/javascript">
+        Vue.component('simple-table',{
+            template:"#simple-table",
+            props:['columns','rows','filterword'],
+            methods:{
+                deleteItem:function(item){
+                    this.$dispatch('item-delete',item)
+                },
+                edit:function(){
+                    alert('编辑')
+                }
+            },
+            component:('#dialog',{
+                template:"#dialog"
+            })
+        })
+        var vm = new Vue({
+            el: "#app",
+            data:{
+                searchword:'',
+                vmcolumns:[{
+                    name:'name',
+                    iskey:true
+                },{
+                    name:'age',
+                },{
+                    name:'sex',
+                    datasource:['male','female']
+                }],
+                vmrows:[{
+                    name: 'Jack',
+                    age: 30,
+                    sex: 'Male'
+                }, {
+                    name: 'Bill',
+                    age: 26,
+                    sex: 'Male'
+                }, {
+                    name: 'Tracy',
+                    age: 22,
+                    sex: 'Female'
+                }, {
+                    name: 'Chris',
+                    age: 36,
+                    sex: 'Male'
+                }]
+            },
+            events:{
+                'item-delete':function(item){
+                    this.vmrows.splice(item,1)
+                }
+            }
+        })
+    </script>
+</html>

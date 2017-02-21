@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    <div id="app">
+        <p>没有替换slot</p>
+        <my-component>
+        </my-component>
+        <br>
+        <p>替换了slot</p>
+        <my-component>
+         <p>父组件传递的值如果不写 就显示"slot的默认值"</p>
+        </my-component>
+    </div>
+    <template id="myComponent">
+        <div class="content">
+            <h2>This is a component!</h2>
+            <slot>slot的默认值</slot>
+            <p>Say something...</p>
+        </div>
+    </template>
+
+</body>
+    <script src="js/vue.js"></script>
+    <script>
+        Vue.component('my-component', {
+            template: '#myComponent'
+        })
+
+        new Vue({
+            el: '#app'
+        })
+    </script>
+</html>
