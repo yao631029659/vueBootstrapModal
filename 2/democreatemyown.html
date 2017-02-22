@@ -5,14 +5,19 @@
         <link href="http://apps.bdimg.com/libs/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
     </head>
     <body>
+
+    <!-- 爷组件 -->
     <div class="container">
         <div id="app">
-            <button type="button" data-toggle='modal' href="#mymodal">新增</button>
-            <hr>
+            <!-- 父组件的一个button触发了子组件的事件 -->
+
             <input type="text" v-model="searchword">
             <simple-table :columns="vmcolumns" :rows='vmrows' :filterword="searchword"></simple-table>
+            <button type="button" @click="notify">新增</button>
         </div>
     </div>
+
+    <!-- 父组件 -->
     <template id="simple-table">
         <table class="table">
             <caption>table title and/or explanatory text</caption>
@@ -32,8 +37,11 @@
                 </tr>
             </tbody>
         </table>
+        <simple-dialog></simple-dialog>
     </template>
-    <!-- <template id='dialog'> -->
+
+    <!-- 子组件 -->
+    <template id="dialog">
         <div class="modal fade" id='mymodal' data-backdrop='false'>
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -49,7 +57,7 @@
                 </div>
             </div>
         </div>
-    <!-- </template> -->
+    </template>
     </body>
     <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
     <script src="http://apps.bdimg.com/libs/jquery/2.0.0/jquery.min.js"></script>
@@ -67,11 +75,19 @@
                 },
                 edit:function(){
                     alert('编辑')
-                }
+                },
             },
-            component:('#dialog',{
-                template:"#dialog"
-            })
+            // 记得是components 有一次少写了s
+            components:{
+                'simple-dialog':{
+                    template:"#dialog",
+                    events:{
+                        'show-dialog':function(){
+                            $('#mymodal').modal('show')
+                        }
+                    }
+                }
+            }
         })
         var vm = new Vue({
             el: "#app",
@@ -104,11 +120,17 @@
                     sex: 'Male'
                 }]
             },
+            methods:{
+                // 通知孙组件
+                notify:function(){
+                    this.$broadcast('show-dialog')
+                }
+            },
             events:{
                 'item-delete':function(item){
                     this.vmrows.splice(item,1)
                 }
-            }
+            },
         })
     </script>
 </html>
