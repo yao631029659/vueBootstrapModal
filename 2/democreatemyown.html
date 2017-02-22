@@ -13,7 +13,7 @@
 
             <input type="text" v-model="searchword">
             <simple-table :columns="vmcolumns" :rows='vmrows' :filterword="searchword"></simple-table>
-            <button type="button" @click="notify">新增</button>
+            <button type="button" @click="showadddialog">新增</button>
         </div>
     </div>
 
@@ -30,17 +30,17 @@
             <tbody>
                 <tr v-for="(index,row) in rows | filterBy filterword">
                     <td v-for="col in columns">
-                        <span v-if='col.iskey'><a href="javascript:void(0)" @click='edit(row)'>{{row[col.name]}}</a></span>
+                        <span v-if='col.iskey'><a href="javascript:void(0)" @click='edit(index,row)'>{{row[col.name]}}</a></span>
                         <span v-else>{{row[col.name]}}</span>
                     </td>
-                    <td><span><button type="button" @click='deleteItem(index)'>删除</button></span></td>
+                    <td><span><button type="button" @click='deleteItem($index)'>删除</button></span></td>
                 </tr>
             </tbody>
         </table>
-        <simple-dialog></simple-dialog>
+        <simple-dialog :fileds='columns'></simple-dialog>
     </template>
 
-    <!-- 子组件 -->
+    <!-- 子组件 dialog -->
     <template id="dialog">
         <div class="modal fade" id='mymodal' data-backdrop='false'>
             <div class="modal-dialog">
@@ -48,8 +48,23 @@
                     <div class="modal-header">
                         <button class="close" data-dismiss="modal">×</button>
                     </div>
-                    <div class="medal-body">body</div>
+                    <div class="medal-body">
+                        <div v-for="field in fileds" class="form-group">
+                            <label>{{field.name}}</label>
+                            <!-- 如果有datasource就显示下拉 -->
+                            <select v-if="field.datasource" v-model="item[field.name]">
+                                <option v-for="opt in field.datasource" :value='opt' :opt="item[field.name]">{{opt}}</option>
+                            </select>
+                            <input v-else type="text" v-model='item[field.name]'>
+                        </div>
+                    </div>
                     <div class="modal-footer">
+                         <button v-if="mode=='add'" data-dismiss='modal' class="btn btn-default" @click="notifyaddnew">
+                            保存
+                        </button>
+                        <button v-if="mode=='edit'" data-dismiss='modal' class="btn btn-default" @click="notfiyedititem(this.index)">
+                            保存
+                        </button>
                         <button data-dismiss='modal' class="btn btn-default">
                             关闭
                         </button>
@@ -66,6 +81,7 @@
 
     <script type="text/javascript" src="./js/vue.js"></script>
     <script type="text/javascript">
+        // 表格组件
         Vue.component('simple-table',{
             template:"#simple-table",
             props:['columns','rows','filterword'],
@@ -73,19 +89,50 @@
                 deleteItem:function(item){
                     this.$dispatch('item-delete',item)
                 },
-                edit:function(){
-                    alert('编辑')
-                },
+                edit:function(index,item){
+                    this.$broadcast('show-edit-dialog',index,item)
+                }
             },
-            // 记得是components 有一次少写了s
+            // dialog 对话框
             components:{
                 'simple-dialog':{
                     template:"#dialog",
                     events:{
+                        // 新增
                         'show-dialog':function(){
+                            this.item={}
+                            this.mode='add'
                             $('#mymodal').modal('show')
+                        },
+                        // 修改
+                        'show-edit-dialog':function(index,row){
+                            // 显示对话框
+                            this.mode='edit'
+                            this.index=index
+                            $('#mymodal').modal('show'),
+                            // 深拷贝 不能直接等于哦 用一个空字典来接收row的值 然后复制给item
+                            this.item=$.extend(true,{},row);
                         }
-                    }
+                    },
+                    methods:{
+                        notifyaddnew:function(){
+                            this.$dispatch('add-new-item',this.item)
+                        },
+                        notfiyedititem:function(index){
+                            this.$dispatch('nodify-edit-item',index,this.item)
+                        }
+                    },
+                    data:function(){
+                        return {
+                            item:{},
+                            // 用来记录是从哪一个按钮进来的
+                            mode:"",
+                            index:"",
+
+                        }
+                    },
+                    // props要用''括住 使用数组就可以了 表头
+                    props:['fileds']
                 }
             }
         })
@@ -100,7 +147,7 @@
                     name:'age',
                 },{
                     name:'sex',
-                    datasource:['male','female']
+                    datasource:['Male','Female']
                 }],
                 vmrows:[{
                     name: 'Jack',
@@ -121,14 +168,27 @@
                 }]
             },
             methods:{
-                // 通知孙组件
-                notify:function(){
+                // 展现新增的dialog
+                showadddialog:function(){
                     this.$broadcast('show-dialog')
-                }
+                },
             },
             events:{
                 'item-delete':function(item){
                     this.vmrows.splice(item,1)
+                },
+                'add-new-item':function(item){
+                    alert('新增信号')
+                    this.vmrows.push(item)
+                },
+                'nodify-edit-item':function(index,item){
+                    $.extend(true,this.vmrows[index],item);
+
+                    // currentobj=this.vmrows[index]
+                    // currentobj.name=item.name
+                    // currentobj.age=item.age
+                    // currentobj.sex=item.sex
+
                 }
             },
         })
